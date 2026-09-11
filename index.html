@@ -21,9 +21,9 @@
     button { border:0; background:var(--red); color:white; font-weight:700; cursor:pointer; } button:hover { background:#af001e; } button:disabled { opacity:.65; cursor:wait; }
     #status { color:var(--muted); margin-left:auto; min-height:22px; } .error { color:#b00020 !important; }
     .grid { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(370px,1fr); gap:24px; margin-top:24px; align-items:start; }
-    .card { overflow:hidden; } .card h2 { margin:0; padding:18px 20px 12px; font-size:20px; } .hint { padding:0 20px 15px; margin:0; color:var(--muted); font-size:13px; }
-    .matches { border-top:1px solid var(--line); } .match { display:grid; grid-template-columns:145px 1fr 66px 1fr; align-items:center; min-height:62px; gap:10px; padding:10px 20px; border-bottom:1px solid var(--line); }
-    .match:last-child { border:0; } .when { color:var(--muted); font-size:13px; } .home { display:flex; justify-content:flex-end; text-align:right; font-weight:620; } .away { display:flex; justify-content:flex-start; font-weight:620; } .score { font-weight:800; text-align:center; white-space:nowrap; }
+    .card { overflow:hidden; } .card h2 { margin:0; padding:18px 20px 12px; font-size:20px; } .hint { padding:0 20px 15px; margin:0; color:var(--muted); font-size:13px; } .table-tabs { display:flex; gap:6px; padding:0 20px 13px; } .table-tabs button { min-height:34px; padding:6px 10px; background:#edf0f2; color:#49545e; font-size:13px; } .table-tabs button.active { background:var(--red); color:#fff; }
+    .matches { border-top:1px solid var(--line); } .match { display:grid; grid-template-columns:145px minmax(0,1fr) 66px minmax(0,1fr); grid-template-areas:"when home score away" "when homeform score awayform"; align-items:center; min-height:62px; gap:4px 10px; padding:10px 20px; border-bottom:1px solid var(--line); }
+    .match:last-child { border:0; } .when { grid-area:when; color:var(--muted); font-size:13px; } .home { grid-area:home; display:flex; justify-content:flex-end; text-align:right; font-weight:620; } .away { grid-area:away; display:flex; justify-content:flex-start; font-weight:620; } .score { grid-area:score; font-weight:800; text-align:center; white-space:nowrap; } .venue-form { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:11px; min-height:18px; } .home-form { grid-area:homeform; justify-content:flex-end; } .away-form { grid-area:awayform; justify-content:flex-start; } .venue-form b { font-weight:650; } .rank { display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 3px; border-radius:9px; background:#e6eaed; color:#3f4b55; font-size:10px; font-weight:750; } .rank.win { background:#16803a; color:#fff; } .rank.draw { background:#f2c94c; color:#3c3000; } .rank.loss { background:#c52636; color:#fff; } .rank.pending { background:#d9dfe3; color:transparent; } .rank.unknown { background:transparent; border:1px solid #d3d9de; color:#7b8791; }
     .club { display:inline-flex; align-items:center; gap:8px; } .logo { width:28px; height:28px; object-fit:contain; flex:0 0 28px; } .table-logo { width:22px; height:22px; object-fit:contain; vertical-align:middle; margin-right:7px; }
     .planned .score { color:var(--muted); font-weight:600; font-size:13px; } .empty { padding:25px 20px; color:var(--muted); }
     #table { overflow-x:auto; -webkit-overflow-scrolling:touch; } table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; } th { color:var(--muted); font-size:12px; text-align:right; font-weight:650; background:#fafbfc; } th:nth-child(2), td:nth-child(2) { text-align:left; } th,td { padding:9px 8px; border-top:1px solid var(--line); text-align:right; } td:first-child { color:var(--muted); } td:nth-child(2) { font-weight:620; } td:last-child { font-weight:800; } .note { margin:15px 20px 19px; color:var(--muted); font-size:12px; }
@@ -31,9 +31,9 @@
     @media (max-width:600px) {
       header { padding:22px 16px; } main { margin-top:16px; padding:0 12px; }
       .controls { display:grid; grid-template-columns:1fr; gap:12px; padding:14px; } label, select, button { width:100%; } select, button { min-height:46px; font-size:16px; } #status { width:auto; margin:0; font-size:13px; }
-      .grid { margin-top:16px; gap:16px; } .card h2 { padding:16px 16px 8px; font-size:18px; } .hint { padding:0 16px 12px; }
-      .match { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"when when" "home score" "away score"; gap:6px 12px; padding:12px 16px; min-height:0; font-size:15px; }
-      .when { grid-area:when; font-size:12px; padding-bottom:4px; border-bottom:1px solid #eef1f3; } .home { grid-area:home; justify-content:flex-start; text-align:left; } .away { grid-area:away; } .score { grid-area:score; align-self:center; font-size:17px; }
+      .grid { margin-top:16px; gap:16px; } .card h2 { padding:16px 16px 8px; font-size:18px; } .hint { padding:0 16px 12px; } .table-tabs { padding:0 16px 12px; } .table-tabs button { width:auto; min-height:32px; font-size:12px; }
+      .match { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"when when" "home score" "homeform score" "away score" "awayform score"; gap:4px 12px; padding:12px 16px; min-height:0; font-size:15px; }
+      .when { grid-area:when; font-size:12px; padding-bottom:4px; border-bottom:1px solid #eef1f3; } .home { grid-area:home; justify-content:flex-start; text-align:left; } .away { grid-area:away; } .score { grid-area:score; align-self:center; font-size:17px; } .venue-form { font-size:10px; } .home-form { grid-area:homeform; justify-content:flex-start; } .away-form { grid-area:awayform; justify-content:flex-start; }
       .home .logo { order:-1; } .logo { width:25px; height:25px; flex-basis:25px; } .club { gap:7px; }
       table { min-width:0; } th,td { padding:8px 4px; font-size:12px; white-space:nowrap; } th:nth-child(2),td:nth-child(2) { width:33px; } th:nth-child(2) { font-size:0; } .team-name { display:none; } .table-logo { width:22px; height:22px; margin:0; } .note { margin:12px 16px 16px; } .empty { padding:22px 16px; }
     }
@@ -48,8 +48,8 @@
       <span id="status" role="status">Daten noch nicht geladen.</span>
     </section>
     <div class="grid">
-      <section class="card"><h2 id="matchTitle">Spieltagskalender</h2><p class="hint">Abgeschlossene Partien zeigen das Ergebnis. Bei angesetzten Spielen wird der Termin angezeigt.</p><div id="matches" class="matches"><p class="empty">Bitte Daten laden.</p></div></section>
-      <section class="card"><h2>Bundesliga-Tabelle</h2><div id="table"><p class="empty">Die Tabelle wird nach dem Laden aus allen abgeschlossenen Spielen berechnet.</p></div><p class="note">Wertung: 3 Punkte für einen Sieg, 1 Punkt für ein Unentschieden. Noch nicht beendete Spiele zählen nicht.</p></section>
+      <section class="card"><h2 id="matchTitle">Spieltagskalender</h2><p class="hint">Unter den Teams: die letzten drei Heim- bzw. Auswärtstermine. Die Zahl ist der damalige Gegnerplatz; Grün = Sieg, Gelb = Unentschieden, Rot = Niederlage, Grau = noch nicht gespielt.</p><div id="matches" class="matches"><p class="empty">Bitte Daten laden.</p></div></section>
+      <section class="card"><h2 id="tableTitle">Bundesliga-Tabelle</h2><div class="table-tabs" role="group" aria-label="Tabellenart"><button type="button" class="active" data-scope="all">Gesamt</button><button type="button" data-scope="home">Heim</button><button type="button" data-scope="away">Auswärts</button></div><div id="table"><p class="empty">Die Tabelle wird nach dem Laden aus den abgeschlossenen Spielen berechnet.</p></div><p class="note">Wertung: 3 Punkte für einen Sieg, 1 Punkt für ein Unentschieden. Noch nicht beendete Spiele zählen nicht.</p></section>
     </div>
   </main>
   <script>
@@ -57,7 +57,7 @@
       const API = 'https://api.openligadb.de/getmatchdata/bl1/2026';
       const round = document.querySelector('#round'), refresh = document.querySelector('#refresh');
       const status = document.querySelector('#status'), matchesBox = document.querySelector('#matches');
-      let games = [];
+      let games = [], tableScope = 'all';
       const esc = value => String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
       const groupNo = game => Number(game.group?.groupOrderID ?? game.Group?.GroupOrderID ?? 0);
       const team = (game, side) => game[side]?.teamName ?? game[side]?.TeamName ?? 'Unbekannt';
@@ -85,30 +85,71 @@
         const hour = date.getHours(), minute = date.getMinutes();
         return hour === 0 && minute === 0 || /T00:00(?::00)?(?:Z|[+-]\d\d:\d\d)?$/i.test(raw) ? `${day} · Uhrzeit folgt` : `${day} · ${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')} Uhr`;
       }
-      function renderMatches() {
-        const selected = Number(round.value);
+      function standingsBefore(roundNumber) {
+        const entries = new Map();
+        const add = name => entries.get(name) || (entries.set(name,{name,pts:0,gf:0,ga:0}), entries.get(name));
+        games.forEach(g => { add(team(g,'team1')); add(team(g,'team2')); });
+        games.filter(g => groupNo(g) < roundNumber && isFinished(g) && result(g)).forEach(g => {
+          const [homeGoals, awayGoals] = result(g), home = add(team(g,'team1')), away = add(team(g,'team2'));
+          home.gf += homeGoals; home.ga += awayGoals; away.gf += awayGoals; away.ga += homeGoals;
+          if (homeGoals > awayGoals) home.pts += 3; else if (homeGoals < awayGoals) away.pts += 3; else { home.pts++; away.pts++; }
+        });
+        // Vor dem ersten Spieltag gibt es noch keine Tabellenplatzierung: Rang 0.
+        if (roundNumber <= 1) return new Map([...entries.keys()].map(name => [name,0]));
+        return new Map([...entries.values()].sort((a,b) => b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'de')).map((entry,index) => [entry.name,index+1]));
+      }
+      function venueForm(game, side) {
+        const roundNumber = groupNo(game), isHome = side === 'team1', club = team(game,side);
+        const history = games.filter(candidate => groupNo(candidate) < roundNumber && team(candidate,side) === club)
+          .sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? ''))).slice(-3).reverse();
+        const label = isHome ? 'Heimform' : 'Auswärtsform';
+        if (!history.length) return `<div class="venue-form ${isHome ? 'home-form' : 'away-form'}"><b>${label}:</b><span class="rank unknown">–</span></div>`;
+        const chips = history.map(previous => {
+          if (!isFinished(previous) || !result(previous)) return '<span class="rank pending" title="Noch nicht gespielt"></span>';
+          const opponent = team(previous, isHome ? 'team2' : 'team1');
+          const place = standingsBefore(groupNo(previous)).get(opponent);
+          const hasPlace = Number.isInteger(place);
+          const [homeGoals, awayGoals] = result(previous), ownGoals = isHome ? homeGoals : awayGoals, otherGoals = isHome ? awayGoals : homeGoals;
+          const outcome = ownGoals > otherGoals ? 'win' : ownGoals < otherGoals ? 'loss' : 'draw';
+          return `<span class="rank ${outcome}${hasPlace ? '' : ' unknown'}" title="${esc(opponent)}: ${hasPlace ? `${place}. Platz vor diesem Spieltag` : 'Platzierung nicht verfügbar'} · ${outcome === 'win' ? 'Sieg' : outcome === 'draw' ? 'Unentschieden' : 'Niederlage'}">${hasPlace ? place : '–'}</span>`;
+        }).join('');
+        return `<div class="venue-form ${isHome ? 'home-form' : 'away-form'}"><b>${label}:</b>${chips}</div>`;
+      }
+      function renderMatches(selected) {
         const selectedGames = games.filter(g => groupNo(g) === selected).sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? '')));
         document.querySelector('#matchTitle').textContent = `${selected}. Spieltag`;
         matchesBox.innerHTML = selectedGames.length ? selectedGames.map(g => {
           const score = isFinished(g) && result(g);
-          return `<article class="match ${score ? '' : 'planned'}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${esc(team(g,'team2'))}</span></div></article>`;
+          return `<article class="match ${score ? '' : 'planned'}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${esc(team(g,'team2'))}</span></div>${venueForm(g,'team1')}${venueForm(g,'team2')}</article>`;
         }).join('') : '<p class="empty">Für diesen Spieltag liegen keine Spiele vor.</p>';
       }
-      function renderTable() {
+      function renderTable(selected) {
+        const roundsUpToSelection = [...new Set(games.map(groupNo).filter(roundNumber => roundNumber <= selected))];
+        const completedRound = roundsUpToSelection.filter(roundNumber => {
+          const roundGames = games.filter(g => groupNo(g) === roundNumber);
+          return roundGames.length && roundGames.every(g => isFinished(g) && result(g));
+        }).sort((a,b) => a-b).at(-1) ?? 0;
+        document.querySelector('#tableTitle').textContent = completedRound ? `Tabelle nach dem ${completedRound}. Spieltag` : 'Tabelle vor dem 1. Spieltag';
         const standings = new Map();
         const entry = (name, icon = '') => standings.get(name) || (standings.set(name,{ name, icon, played:0,w:0,d:0,l:0,gf:0,ga:0,pts:0 }), standings.get(name));
         // Alle in der Saison vorkommenden Teams erscheinen auch bei noch 0 Spielen.
-        games.forEach(g => { entry(team(g,'team1'), teamLogo(g,'team1')); entry(team(g,'team2'), teamLogo(g,'team2')); });
-        games.forEach(g => {
-          const score = isFinished(g) && result(g); if (!score) return;
+        const relevantGames = games.filter(g => groupNo(g) <= completedRound);
+        relevantGames.forEach(g => { entry(team(g,'team1'), teamLogo(g,'team1')); entry(team(g,'team2'), teamLogo(g,'team2')); });
+        const completedGames = relevantGames.filter(g => isFinished(g) && result(g)).sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? '')));
+        const applyResult = (club, goalsFor, goalsAgainst) => {
+          club.played++; club.gf += goalsFor; club.ga += goalsAgainst;
+          if (goalsFor > goalsAgainst) { club.w++; club.pts += 3; } else if (goalsFor < goalsAgainst) { club.l++; } else { club.d++; club.pts++; }
+        };
+        completedGames.forEach(g => {
+          const score = result(g);
           const home = entry(team(g,'team1')), away = entry(team(g,'team2')), [hg,ag] = score;
-          home.played++; away.played++; home.gf += hg; home.ga += ag; away.gf += ag; away.ga += hg;
-          if (hg > ag) { home.w++; away.l++; home.pts += 3; } else if (hg < ag) { away.w++; home.l++; away.pts += 3; } else { home.d++; away.d++; home.pts++; away.pts++; }
+          if (tableScope !== 'away') applyResult(home,hg,ag);
+          if (tableScope !== 'home') applyResult(away,ag,hg);
         });
         const rows = [...standings.values()].sort((a,b) => b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'de'));
         document.querySelector('#table').innerHTML = rows.length ? `<table><thead><tr><th>#</th><th>Verein</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff.</th><th>Pkt.</th></tr></thead><tbody>${rows.map((r,i) => `<tr><td>${i+1}</td><td title="${esc(r.name)}">${logo(r.icon,'table-logo')}<span class="team-name">${esc(r.name)}</span></td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}:${r.ga}</td><td>${r.gf-r.ga > 0 ? '+' : ''}${r.gf-r.ga}</td><td>${r.pts}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Es liegen noch keine abgeschlossenen Spiele vor.</p>';
       }
-      function render() { renderMatches(); renderTable(); }
+      function render() { const selected = Number(round.value); renderMatches(selected); renderTable(selected); }
       async function load() {
         refresh.disabled = true; status.className = ''; status.textContent = 'Lade Daten von OpenLigaDB …';
         try {
@@ -124,7 +165,14 @@
           status.className = 'error'; status.textContent = `Aktualisierung nicht möglich: ${error.message}. Bitte Internetverbindung prüfen.`;
         } finally { refresh.disabled = false; }
       }
-      round.addEventListener('change', renderMatches); refresh.addEventListener('click', load); load();
+      round.addEventListener('change', render);
+      document.querySelector('.table-tabs').addEventListener('click', event => {
+        const button = event.target.closest('button[data-scope]'); if (!button) return;
+        tableScope = button.dataset.scope;
+        document.querySelectorAll('.table-tabs button').forEach(item => item.classList.toggle('active', item === button));
+        renderTable(Number(round.value));
+      });
+      refresh.addEventListener('click', load); load();
     })();
   </script>
 </body>
