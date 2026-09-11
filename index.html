@@ -35,7 +35,7 @@
       .match { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"when when" "home score" "away score"; gap:6px 12px; padding:12px 16px; min-height:0; font-size:15px; }
       .when { grid-area:when; font-size:12px; padding-bottom:4px; border-bottom:1px solid #eef1f3; } .home { grid-area:home; justify-content:flex-start; text-align:left; } .away { grid-area:away; } .score { grid-area:score; align-self:center; font-size:17px; }
       .home .logo { order:-1; } .logo { width:25px; height:25px; flex-basis:25px; } .club { gap:7px; }
-      table { min-width:650px; } th,td { padding:9px 8px; font-size:13px; } .note { margin:12px 16px 16px; } .empty { padding:22px 16px; }
+      table { min-width:0; } th,td { padding:8px 4px; font-size:12px; white-space:nowrap; } th:nth-child(2),td:nth-child(2) { width:33px; } th:nth-child(2) { font-size:0; } .team-name { display:none; } .table-logo { width:22px; height:22px; margin:0; } .note { margin:12px 16px 16px; } .empty { padding:22px 16px; }
     }
   </style>
 </head>
@@ -106,7 +106,7 @@
           if (hg > ag) { home.w++; away.l++; home.pts += 3; } else if (hg < ag) { away.w++; home.l++; away.pts += 3; } else { home.d++; away.d++; home.pts++; away.pts++; }
         });
         const rows = [...standings.values()].sort((a,b) => b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'de'));
-        document.querySelector('#table').innerHTML = rows.length ? `<table><thead><tr><th>#</th><th>Verein</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff.</th><th>Pkt.</th></tr></thead><tbody>${rows.map((r,i) => `<tr><td>${i+1}</td><td>${logo(r.icon,'table-logo')}${esc(r.name)}</td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}:${r.ga}</td><td>${r.gf-r.ga > 0 ? '+' : ''}${r.gf-r.ga}</td><td>${r.pts}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Es liegen noch keine abgeschlossenen Spiele vor.</p>';
+        document.querySelector('#table').innerHTML = rows.length ? `<table><thead><tr><th>#</th><th>Verein</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff.</th><th>Pkt.</th></tr></thead><tbody>${rows.map((r,i) => `<tr><td>${i+1}</td><td title="${esc(r.name)}">${logo(r.icon,'table-logo')}<span class="team-name">${esc(r.name)}</span></td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}:${r.ga}</td><td>${r.gf-r.ga > 0 ? '+' : ''}${r.gf-r.ga}</td><td>${r.pts}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Es liegen noch keine abgeschlossenen Spiele vor.</p>';
       }
       function render() { renderMatches(); renderTable(); }
       async function load() {
