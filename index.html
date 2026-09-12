@@ -125,15 +125,16 @@
       }
       function renderTable(selected) {
         const roundsUpToSelection = [...new Set(games.map(groupNo).filter(roundNumber => roundNumber <= selected))];
-        const completedRound = roundsUpToSelection.filter(roundNumber => {
+        const lastStartedRound = roundsUpToSelection.filter(roundNumber => {
           const roundGames = games.filter(g => groupNo(g) === roundNumber);
-          return roundGames.length && roundGames.every(g => isFinished(g) && result(g));
+          return roundGames.some(g => isFinished(g) && result(g));
         }).sort((a,b) => a-b).at(-1) ?? 0;
-        document.querySelector('#tableTitle').textContent = completedRound ? `Tabelle nach dem ${completedRound}. Spieltag` : 'Tabelle vor dem 1. Spieltag';
+        const isFinishedRound = lastStartedRound && games.filter(g => groupNo(g) === lastStartedRound).every(g => isFinished(g) && result(g));
+        document.querySelector('#tableTitle').textContent = lastStartedRound ? (isFinishedRound ? `Tabelle nach dem ${lastStartedRound}. Spieltag` : `Tabelle während des ${lastStartedRound}. Spieltag`) : 'Tabelle vor dem 1. Spieltag';
         const standings = new Map();
         const entry = (name, icon = '') => standings.get(name) || (standings.set(name,{ name, icon, played:0,w:0,d:0,l:0,gf:0,ga:0,pts:0 }), standings.get(name));
         // Alle in der Saison vorkommenden Teams erscheinen auch bei noch 0 Spielen.
-        const relevantGames = games.filter(g => groupNo(g) <= completedRound);
+        const relevantGames = games.filter(g => groupNo(g) <= lastStartedRound);
         relevantGames.forEach(g => { entry(team(g,'team1'), teamLogo(g,'team1')); entry(team(g,'team2'), teamLogo(g,'team2')); });
         const completedGames = relevantGames.filter(g => isFinished(g) && result(g)).sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? '')));
         const applyResult = (club, goalsFor, goalsAgainst) => {
