@@ -28,7 +28,7 @@
     .card { overflow:hidden; } .card h2 { margin:0; padding:18px 20px 12px; font-size:20px; } .hint { padding:0 20px 15px; margin:0; color:var(--muted); font-size:13px; } .table-tabs { display:flex; gap:6px; padding:0 20px 13px; } .table-tabs button { min-height:34px; padding:6px 10px; background:#edf0f2; color:#49545e; font-size:13px; } .table-tabs button.active { background:var(--red); color:#fff; }
     .matches { border-top:1px solid var(--line); } .match { display:grid; grid-template-columns:145px minmax(0,1fr) 66px minmax(0,1fr); grid-template-areas:"when home score away" "when homeform score awayform"; align-items:center; min-height:62px; gap:4px 10px; padding:10px 20px; border-bottom:1px solid var(--line); }
     .match:last-child { border:0; } .when { grid-area:when; color:var(--muted); font-size:13px; } .home { grid-area:home; display:flex; justify-content:flex-end; text-align:right; font-weight:620; } .away { grid-area:away; display:flex; justify-content:flex-start; font-weight:620; } .score { grid-area:score; font-weight:800; text-align:center; white-space:nowrap; } .venue-form { display:flex; align-items:center; gap:4px; color:var(--muted); font-size:11px; min-height:18px; } .home-form { grid-area:homeform; justify-content:flex-end; } .away-form { grid-area:awayform; justify-content:flex-start; } .venue-form b { font-weight:650; } .rank { display:inline-grid; place-items:center; min-width:18px; height:18px; padding:0 3px; border-radius:9px; background:#e6eaed; color:#3f4b55; font-size:10px; font-weight:750; } .rank.win { background:#16803a; color:#fff; } .rank.draw { background:#f2c94c; color:#3c3000; } .rank.loss { background:#c52636; color:#fff; } .rank.pending { background:#d9dfe3; color:transparent; } .rank.unknown { background:transparent; border:1px solid #d3d9de; color:#7b8791; }
-    .club { display:inline-flex; align-items:center; gap:8px; } .logo { width:28px; height:28px; object-fit:contain; flex:0 0 28px; } .table-logo { width:22px; height:22px; object-fit:contain; vertical-align:middle; margin-right:7px; }
+    .club { display:inline-flex; align-items:center; gap:8px; } .place { color:var(--muted); font-weight:600; font-variant-numeric:tabular-nums; } .logo { width:28px; height:28px; object-fit:contain; flex:0 0 28px; } .table-logo { width:22px; height:22px; object-fit:contain; vertical-align:middle; margin-right:7px; }
     .planned .score { color:var(--muted); font-weight:600; font-size:13px; } .empty { padding:25px 20px; color:var(--muted); }
     #table { overflow-x:auto; -webkit-overflow-scrolling:touch; } table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; } th { color:var(--muted); font-size:12px; text-align:right; font-weight:650; background:#fafbfc; } th:nth-child(2), td:nth-child(2) { text-align:left; } th,td { padding:9px 8px; border-top:1px solid var(--line); text-align:right; } td:first-child { color:var(--muted); } td:nth-child(2) { font-weight:620; } td:last-child { font-weight:800; } .note { margin:15px 20px 19px; color:var(--muted); font-size:12px; }
     @media (max-width:850px) { .grid { grid-template-columns:1fr; } #status { width:100%; margin-left:0; } }
@@ -38,7 +38,7 @@
       .grid { margin-top:16px; gap:16px; } .card h2 { padding:16px 16px 8px; font-size:18px; } .hint { padding:0 16px 12px; } .table-tabs { padding:0 16px 12px; } .table-tabs button { width:auto; min-height:32px; font-size:12px; }
       .match { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"when when" "home score" "homeform score" "away score" "awayform score"; gap:4px 12px; padding:12px 16px; min-height:0; font-size:15px; }
       .when { grid-area:when; font-size:12px; padding-bottom:4px; border-bottom:1px solid #eef1f3; } .home { grid-area:home; justify-content:flex-start; text-align:left; } .away { grid-area:away; } .score { grid-area:score; align-self:center; font-size:17px; } .venue-form { font-size:10px; } .home-form { grid-area:homeform; justify-content:flex-start; } .away-form { grid-area:awayform; justify-content:flex-start; }
-      .home .logo { order:-1; } .logo { width:25px; height:25px; flex-basis:25px; } .club { gap:7px; }
+      .home .logo { order:-2; } .home .place { order:-1; } .logo { width:25px; height:25px; flex-basis:25px; } .club { gap:7px; }
       table { min-width:0; } th,td { padding:8px 4px; font-size:12px; white-space:nowrap; } th:nth-child(2),td:nth-child(2) { width:33px; } th:nth-child(2) { font-size:0; } .team-name { display:none; } .table-logo { width:22px; height:22px; margin:0; } .note { margin:12px 16px 16px; } .empty { padding:22px 16px; }
     }
   </style>
@@ -122,20 +122,25 @@
         }).join('');
         return `<div class="venue-form ${isHome ? 'home-form' : 'away-form'}"><b>${label}:</b>${chips}</div>`;
       }
+      function lastStartedRoundUpTo(selected) {
+        // Letzter Spieltag bis zur Auswahl, in dem schon mindestens ein Ergebnis vorliegt.
+        return [...new Set(games.map(groupNo).filter(roundNumber => roundNumber <= selected))]
+          .filter(roundNumber => games.some(g => groupNo(g) === roundNumber && isFinished(g) && result(g)))
+          .sort((a,b) => a-b).at(-1) ?? 0;
+      }
       function renderMatches(selected) {
+        // Platzierung wie in der daneben angezeigten Gesamttabelle; vor dem 1. Spieltag gibt es noch keine.
+        const lastStarted = lastStartedRoundUpTo(selected), places = lastStarted ? standingsBefore(lastStarted + 1) : new Map();
+        const place = name => places.get(name) ? `<span class="place">(${places.get(name)})</span>` : '';
         const selectedGames = games.filter(g => groupNo(g) === selected).sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? '')));
         document.querySelector('#matchTitle').textContent = `${selected}. Spieltag`;
         matchesBox.innerHTML = selectedGames.length ? selectedGames.map(g => {
           const score = isFinished(g) && result(g);
-          return `<article class="match ${score ? '' : 'planned'}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${esc(team(g,'team2'))}</span></div>${venueForm(g,'team1')}${venueForm(g,'team2')}</article>`;
+          return `<article class="match ${score ? '' : 'planned'}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${place(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${place(team(g,'team2'))}${esc(team(g,'team2'))}</span></div>${venueForm(g,'team1')}${venueForm(g,'team2')}</article>`;
         }).join('') : '<p class="empty">Für diesen Spieltag liegen keine Spiele vor.</p>';
       }
       function renderTable(selected) {
-        const roundsUpToSelection = [...new Set(games.map(groupNo).filter(roundNumber => roundNumber <= selected))];
-        const lastStartedRound = roundsUpToSelection.filter(roundNumber => {
-          const roundGames = games.filter(g => groupNo(g) === roundNumber);
-          return roundGames.some(g => isFinished(g) && result(g));
-        }).sort((a,b) => a-b).at(-1) ?? 0;
+        const lastStartedRound = lastStartedRoundUpTo(selected);
         const isFinishedRound = lastStartedRound && games.filter(g => groupNo(g) === lastStartedRound).every(g => isFinished(g) && result(g));
         document.querySelector('#tableTitle').textContent = lastStartedRound ? (isFinishedRound ? `Tabelle nach dem ${lastStartedRound}. Spieltag` : `Tabelle während des ${lastStartedRound}. Spieltag`) : 'Tabelle vor dem 1. Spieltag';
         const standings = new Map();
