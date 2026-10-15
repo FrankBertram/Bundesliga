@@ -68,7 +68,7 @@
     (() => {
       const LEAGUES = { bl1:'Bundesliga', bl2:'2. Bundesliga', bl3:'3. Liga' };
       const switchButtons = document.querySelectorAll('.league-switch button');
-      let league = 'bl1', requestNo = 0, myClub = null;
+      let league = 'bl1', requestNo = 0, myClub = null, loadedAt = 0;
       const myClubButton = document.querySelector('#myClub'), clubPicker = document.querySelector('#clubPicker');
       try { myClub = JSON.parse(localStorage.getItem('myClub')) ?? null; } catch {}
       try { const saved = localStorage.getItem('league') || location.hash.slice(1); if (LEAGUES[saved]) league = saved; } catch { if (LEAGUES[location.hash.slice(1)]) league = location.hash.slice(1); }
@@ -219,7 +219,7 @@
           if (!response.ok) throw new Error(`Server antwortet mit ${response.status}`);
           const data = await response.json(); if (!Array.isArray(data)) throw new Error('Unerwartetes Datenformat');
           if (myRequest !== requestNo) return;
-          games = data; const groups = [...new Set(games.map(groupNo).filter(Boolean))].sort((a,b)=>a-b);
+          games = data; loadedAt = Date.now(); const groups = [...new Set(games.map(groupNo).filter(Boolean))].sort((a,b)=>a-b);
           round.innerHTML = groups.map(n => `<option value="${n}">${n}. Spieltag</option>`).join(''); round.disabled = !groups.length;
           const active = groups.find(n => games.some(g => groupNo(g) === n && !isFinished(g))) ?? groups.at(-1);
           if (active) round.value = active;
@@ -252,6 +252,10 @@
       document.addEventListener('click', () => { if (!clubPicker.hidden) toggleClubPicker(false); });
       document.addEventListener('keydown', event => { if (event.key === 'Escape' && !clubPicker.hidden) { toggleClubPicker(false); myClubButton.focus(); } });
       showMyClub();
+      // iOS holt Homescreen-Apps aus dem Hintergrund, ohne neu zu laden: Daten dann auffrischen, wenn sie älter als 2 Minuten sind.
+      const refreshIfStale = () => { if (document.visibilityState === 'visible' && loadedAt && Date.now() - loadedAt > 2 * 60 * 1000) load(); };
+      document.addEventListener('visibilitychange', refreshIfStale);
+      addEventListener('pageshow', event => { if (event.persisted) refreshIfStale(); });
       refresh.addEventListener('click', load); showLeague(); load();
     })();
   </script>
