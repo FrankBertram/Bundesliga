@@ -139,9 +139,9 @@
           .sort((a,b) => a-b).at(-1) ?? 0;
       }
       function renderMatches(selected) {
-        // Platzierung wie in der daneben angezeigten Gesamttabelle; vor dem 1. Spieltag gibt es noch keine.
-        const lastStarted = lastStartedRoundUpTo(selected), places = lastStarted ? standingsBefore(lastStarted + 1) : new Map();
-        const place = name => places.get(name) ? `<span class="place">(${places.get(name)})</span>` : '';
+        // Platzierung nach dem vorherigen Spieltag; am 1. Spieltag gibt es noch keine Tabelle: (-).
+        const places = standingsBefore(selected);
+        const place = name => `<span class="place">(${places.get(name) || '-'})</span>`;
         const selectedGames = games.filter(g => groupNo(g) === selected).sort((a,b) => String(a.matchDateTimeUTC ?? a.matchDateTime ?? '').localeCompare(String(b.matchDateTimeUTC ?? b.matchDateTime ?? '')));
         document.querySelector('#matchTitle').textContent = `${selected}. Spieltag`;
         matchesBox.innerHTML = selectedGames.length ? selectedGames.map(g => {
