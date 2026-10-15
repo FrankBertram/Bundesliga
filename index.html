@@ -14,8 +14,16 @@
     body { margin:0; font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--page); }
     header { color:#fff; background:linear-gradient(120deg,#171d26,#a9001d); padding:32px max(24px,calc((100% - 1260px)/2)); display:flex; align-items:center; justify-content:space-between; gap:16px 24px; flex-wrap:wrap; }
     .brand { display:flex; align-items:center; gap:18px; } .league-logo { width:68px; height:68px; flex:0 0 68px; object-fit:contain; background:#fff; border-radius:10px; padding:5px; box-shadow:0 2px 10px #0000003d; }
+    header { position:relative; } .header-actions { display:flex; align-items:center; gap:12px; }
+    .my-club { width:50px; height:50px; padding:5px; border-radius:10px; background:#fff; display:grid; place-items:center; box-shadow:0 2px 10px #0000003d; min-height:0; }
+    .my-club:hover { background:#fff6c4; } .my-club img { width:100%; height:100%; object-fit:contain; } .my-club svg { width:26px; height:26px; color:var(--red); }
+    .club-picker { position:absolute; z-index:10; right:max(24px,calc((100% - 1260px)/2)); top:calc(100% - 14px); width:min(420px,calc(100% - 32px)); max-height:min(70vh,560px); overflow:auto; background:var(--paper); color:var(--ink); border:1px solid var(--line); border-radius:12px; box-shadow:0 12px 32px #17233340; padding:8px; }
+    .club-picker[hidden] { display:none; } .club-picker h3 { margin:6px 10px 8px; font-size:14px; color:var(--muted); font-weight:650; }
+    .club-picker button { display:flex; align-items:center; gap:10px; width:100%; background:transparent; color:var(--ink); font-weight:600; text-align:left; padding:8px 10px; min-height:0; font-size:15px; }
+    .club-picker button:hover { background:#f1f3f5; } .club-picker button.selected { background:#fff6c4; } .club-picker button .logo { width:26px; height:26px; flex-basis:26px; } .club-picker .none { color:var(--muted); border-top:1px solid var(--line); border-radius:0 0 7px 7px; margin-top:4px; }
+    .match.mine, tr.mine td { background:#fff6c4; }
     .league-switch { display:inline-flex; padding:4px; gap:4px; border-radius:10px; background:#ffffff1f; border:1px solid #ffffff38; }
-    .league-switch button { background:transparent; color:#f0dbe0; padding:8px 16px; font-weight:700; min-height:0; width:auto; font-size:15px; }
+    .league-switch .short { display:none; } .league-switch button { white-space:nowrap; background:transparent; color:#f0dbe0; padding:8px 16px; font-weight:700; min-height:0; width:auto; font-size:15px; }
     .league-switch button:hover { background:#ffffff26; color:#fff; } .league-switch button[aria-pressed="true"] { background:#fff; color:var(--red); cursor:default; }
     h1 { margin:0; font-size:clamp(25px,4vw,36px); letter-spacing:-.7px; } .subtitle { margin:6px 0 0; color:#f0dbe0; }
     main { max-width:1260px; margin:28px auto 45px; padding:0 24px; }
@@ -33,7 +41,7 @@
     #table { overflow-x:auto; -webkit-overflow-scrolling:touch; } table { border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; } th { color:var(--muted); font-size:12px; text-align:right; font-weight:650; background:#fafbfc; } th:nth-child(2), td:nth-child(2) { text-align:left; } th,td { padding:9px 8px; border-top:1px solid var(--line); text-align:right; } td:first-child { color:var(--muted); } td:nth-child(2) { font-weight:620; } td:last-child { font-weight:800; } .note { margin:15px 20px 19px; color:var(--muted); font-size:12px; }
     @media (max-width:850px) { .grid { grid-template-columns:1fr; } #status { width:100%; margin-left:0; } }
     @media (max-width:600px) {
-      header { padding:22px 16px; } .league-switch { width:100%; } .brand { gap:12px; } .league-logo { width:52px; height:52px; flex-basis:52px; padding:4px; border-radius:8px; } .league-switch button { flex:1; padding:9px 6px; font-size:14px; } main { margin-top:16px; padding:0 12px; }
+      header { padding:22px 16px; } .header-actions { width:100%; } .league-switch { flex:1; } .league-switch .long { display:none; } .league-switch .short { display:inline; } .my-club { width:46px; height:46px; flex:0 0 46px; padding:4px; } .club-picker { right:16px; width:calc(100% - 32px); top:calc(100% - 10px); } .brand { gap:12px; } .league-logo { width:52px; height:52px; flex-basis:52px; padding:4px; border-radius:8px; } .league-switch button { flex:1; padding:9px 6px; font-size:14px; } main { margin-top:16px; padding:0 12px; }
       .controls { display:grid; grid-template-columns:1fr; gap:12px; padding:14px; } label, select, button { width:100%; } select, button { min-height:46px; font-size:16px; } #status { width:auto; margin:0; font-size:13px; }
       .grid { margin-top:16px; gap:16px; } .card h2 { padding:16px 16px 8px; font-size:18px; } .hint { padding:0 16px 12px; } .table-tabs { padding:0 16px 12px; } .table-tabs button { width:auto; min-height:32px; font-size:12px; }
       .match { grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"when when" "home score" "homeform score" "away score" "awayform score"; gap:4px 12px; padding:12px 16px; min-height:0; font-size:15px; }
@@ -44,7 +52,7 @@
   </style>
 </head>
 <body>
-  <header><div class="brand"><img id="leagueLogo" class="league-logo" src="logo-bl1.svg" alt="Logo Bundesliga"><div><h1 id="leagueTitle">Bundesliga 2026/27</h1><p class="subtitle">Spieltagskalender und Tabelle</p></div></div><div class="league-switch" role="group" aria-label="Liga wählen"><button type="button" data-league="bl1" aria-pressed="true">1. Bundesliga</button><button type="button" data-league="bl2" aria-pressed="false">2. Bundesliga</button><button type="button" data-league="bl3" aria-pressed="false">3. Liga</button></div></header>
+  <header><div class="brand"><img id="leagueLogo" class="league-logo" src="logo-bl1.svg" alt="Logo Bundesliga"><div><h1 id="leagueTitle">Bundesliga 2026/27</h1><p class="subtitle">Spieltagskalender und Tabelle</p></div></div><div class="header-actions"><div class="league-switch" role="group" aria-label="Liga wählen"><button type="button" data-league="bl1" aria-pressed="true">1. <span class="long">Bundesliga</span><span class="short">Liga</span></button><button type="button" data-league="bl2" aria-pressed="false">2. <span class="long">Bundesliga</span><span class="short">Liga</span></button><button type="button" data-league="bl3" aria-pressed="false">3. Liga</button></div><button type="button" id="myClub" class="my-club" aria-haspopup="true" aria-expanded="false" aria-controls="clubPicker" title="Mein Verein wählen"></button></div><div id="clubPicker" class="club-picker" hidden></div></header>
   <main>
     <section class="controls" aria-label="Steuerung">
       <label>Spieltag <select id="round" disabled><option>Nach dem Laden auswählbar</option></select></label>
@@ -60,7 +68,9 @@
     (() => {
       const LEAGUES = { bl1:'Bundesliga', bl2:'2. Bundesliga', bl3:'3. Liga' };
       const switchButtons = document.querySelectorAll('.league-switch button');
-      let league = 'bl1', requestNo = 0;
+      let league = 'bl1', requestNo = 0, myClub = null;
+      const myClubButton = document.querySelector('#myClub'), clubPicker = document.querySelector('#clubPicker');
+      try { myClub = JSON.parse(localStorage.getItem('myClub')) ?? null; } catch {}
       try { const saved = localStorage.getItem('league') || location.hash.slice(1); if (LEAGUES[saved]) league = saved; } catch { if (LEAGUES[location.hash.slice(1)]) league = location.hash.slice(1); }
       const round = document.querySelector('#round'), refresh = document.querySelector('#refresh');
       const status = document.querySelector('#status'), matchesBox = document.querySelector('#matches');
@@ -136,7 +146,7 @@
         document.querySelector('#matchTitle').textContent = `${selected}. Spieltag`;
         matchesBox.innerHTML = selectedGames.length ? selectedGames.map(g => {
           const score = isFinished(g) && result(g);
-          return `<article class="match ${score ? '' : 'planned'}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${place(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${place(team(g,'team2'))}${esc(team(g,'team2'))}</span></div>${venueForm(g,'team1')}${venueForm(g,'team2')}</article>`;
+          return `<article class="match ${score ? '' : 'planned'}${[team(g,'team1'),team(g,'team2')].includes(myClub?.name) ? ' mine' : ''}"><div class="when">${esc(dateText(g))}</div><div class="home"><span class="club">${esc(team(g,'team1'))}${place(team(g,'team1'))}${logo(teamLogo(g,'team1'),'logo')}</span></div><div class="score">${score ? `${score[0]} : ${score[1]}` : 'angesetzt'}</div><div class="away"><span class="club">${logo(teamLogo(g,'team2'),'logo')}${place(team(g,'team2'))}${esc(team(g,'team2'))}</span></div>${venueForm(g,'team1')}${venueForm(g,'team2')}</article>`;
         }).join('') : '<p class="empty">Für diesen Spieltag liegen keine Spiele vor.</p>';
       }
       function renderTable(selected) {
@@ -160,7 +170,24 @@
           if (tableScope !== 'home') applyResult(away,ag,hg);
         });
         const rows = [...standings.values()].sort((a,b) => b.pts-a.pts || (b.gf-b.ga)-(a.gf-a.ga) || b.gf-a.gf || a.name.localeCompare(b.name,'de'));
-        document.querySelector('#table').innerHTML = rows.length ? `<table><thead><tr><th>#</th><th>Verein</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff.</th><th>Pkt.</th></tr></thead><tbody>${rows.map((r,i) => `<tr><td>${i+1}</td><td title="${esc(r.name)}">${logo(r.icon,'table-logo')}<span class="team-name">${esc(r.name)}</span></td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}:${r.ga}</td><td>${r.gf-r.ga > 0 ? '+' : ''}${r.gf-r.ga}</td><td>${r.pts}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Es liegen noch keine abgeschlossenen Spiele vor.</p>';
+        document.querySelector('#table').innerHTML = rows.length ? `<table><thead><tr><th>#</th><th>Verein</th><th>Sp.</th><th>S</th><th>U</th><th>N</th><th>Tore</th><th>Diff.</th><th>Pkt.</th></tr></thead><tbody>${rows.map((r,i) => `<tr${r.name === myClub?.name ? ' class="mine"' : ''}><td>${i+1}</td><td title="${esc(r.name)}">${logo(r.icon,'table-logo')}<span class="team-name">${esc(r.name)}</span></td><td>${r.played}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}:${r.ga}</td><td>${r.gf-r.ga > 0 ? '+' : ''}${r.gf-r.ga}</td><td>${r.pts}</td></tr>`).join('')}</tbody></table>` : '<p class="empty">Es liegen noch keine abgeschlossenen Spiele vor.</p>';
+      }
+      function showMyClub() {
+        // Ohne Auswahl ein Stern als Platzhalter, sonst das Vereinslogo (bzw. die Initialen ohne Logo).
+        myClubButton.innerHTML = !myClub ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1-4.5-4.2 6.1-.8z"/></svg>'
+          : /^https:\/\//i.test(myClub.icon) ? `<img src="${esc(myClub.icon)}" alt="">` : `<b style="color:var(--red)">${esc(myClub.name.slice(0,3))}</b>`;
+        myClubButton.title = myClub ? `Mein Verein: ${myClub.name} (ändern)` : 'Mein Verein wählen';
+        myClubButton.setAttribute('aria-label', myClubButton.title);
+      }
+      function toggleClubPicker(open) {
+        clubPicker.hidden = !open; myClubButton.setAttribute('aria-expanded', String(open));
+        if (!open) return;
+        const clubs = new Map();
+        games.forEach(g => ['team1','team2'].forEach(side => { if (!clubs.has(team(g,side))) clubs.set(team(g,side), teamLogo(g,side)); }));
+        const list = [...clubs].sort((a,b) => a[0].localeCompare(b[0],'de'));
+        clubPicker.innerHTML = `<h3>Mein Verein · ${esc(LEAGUES[league])}</h3>` + (list.length
+          ? list.map(([name,icon]) => `<button type="button" data-club="${esc(name)}" data-icon="${esc(icon)}"${name === myClub?.name ? ' class="selected"' : ''}>${logo(icon,'logo')}${esc(name)}</button>`).join('')
+          : '<p class="empty">Die Vereine werden geladen …</p>') + (myClub ? '<button type="button" class="none" data-club="">Keinen Verein markieren</button>' : '');
       }
       function render() { const selected = Number(round.value); renderMatches(selected); renderTable(selected); }
       function showLeague() {
@@ -196,6 +223,9 @@
           round.innerHTML = groups.map(n => `<option value="${n}">${n}. Spieltag</option>`).join(''); round.disabled = !groups.length;
           const active = groups.find(n => games.some(g => groupNo(g) === n && !isFinished(g))) ?? groups.at(-1);
           if (active) round.value = active;
+          // Logo-Adresse des eigenen Vereins aus den aktuellen Daten übernehmen.
+          const mine = myClub && games.find(g => team(g,'team1') === myClub.name);
+          if (mine && teamLogo(mine,'team1') !== myClub.icon) { myClub.icon = teamLogo(mine,'team1'); try { localStorage.setItem('myClub', JSON.stringify(myClub)); } catch {} showMyClub(); }
           render(); status.textContent = `${games.length} Spiele geladen · Stand: ${new Intl.DateTimeFormat('de-DE',{dateStyle:'medium',timeStyle:'short'}).format(new Date())}`;
         } catch (error) {
           if (myRequest !== requestNo) return;
@@ -210,6 +240,18 @@
         renderTable(Number(round.value));
       });
       switchButtons.forEach(b => b.addEventListener('click', () => switchLeague(b.dataset.league)));
+      myClubButton.addEventListener('click', event => { event.stopPropagation(); toggleClubPicker(clubPicker.hidden); });
+      clubPicker.addEventListener('click', event => {
+        event.stopPropagation();
+        const button = event.target.closest('button[data-club]'); if (!button) return;
+        myClub = button.dataset.club ? { name:button.dataset.club, icon:button.dataset.icon } : null;
+        try { myClub ? localStorage.setItem('myClub', JSON.stringify(myClub)) : localStorage.removeItem('myClub'); } catch {}
+        toggleClubPicker(false); showMyClub(); myClubButton.focus();
+        if (games.length) render();
+      });
+      document.addEventListener('click', () => { if (!clubPicker.hidden) toggleClubPicker(false); });
+      document.addEventListener('keydown', event => { if (event.key === 'Escape' && !clubPicker.hidden) { toggleClubPicker(false); myClubButton.focus(); } });
+      showMyClub();
       refresh.addEventListener('click', load); showLeague(); load();
     })();
   </script>
